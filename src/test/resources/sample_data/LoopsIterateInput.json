@@ -1,0 +1,168 @@
+{
+  "cmeResponse": {
+    "eligibilityList": {
+      "eligibilityInfo": [
+        {
+          "transactionId": "1234",
+          "subscriberInfo": {
+            "ban": "ban1"
+          },
+          "batchProcessInd": "false"
+        },
+        {
+          "transactionId": "1111",
+          "subscriberInfo": {
+            "ban": "ban1",
+            "subscriberId": "sub1",
+            "mdn": "mdn1"
+          },
+          "pricePlanMacList": {
+            "pricePlanMacInfo": [
+              {
+                "pricePlanSoc": "LSD134AS",
+                "effectiveDate": "2017-06-12-04:00",
+                "macList": {
+                  "macInfo": [
+                    {
+                      "mac": "PYAUTO",
+                      "eligibilityCode": "E",
+                      "amount": "5.00",
+                      "duration": "9999",
+                      "relatedSoc": "LSDPHN25D",
+                      "creditAmountOverrideInd": "false",
+                      "durationOverrideInd": "false"
+                    },
+                    {
+                      "mac": "TST8",
+                      "macDesc": "TEST Autopay PPV",
+                      "eligibilityCode": "P",
+                      "maxLineLimit": "3",
+                      "amount": "4.00",
+                      "duration": "9999",
+                      "relatedSoc": "LSD134AS",
+                      "creditAmountOverrideInd": "false",
+                      "durationOverrideInd": "false"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "batchProcessInd": "false"
+        },
+        {
+          "transactionId": "1122",
+          "subscriberInfo": {
+            "ban": "ban1",
+            "subscriberId": "sub2",
+            "mdn": "mdn2"
+          },
+          "pricePlanMacList": {
+            "pricePlanMacInfo": [
+              {
+                "pricePlanSoc": "PDSL002",
+                "effectiveDate": "2017-07-07-04:00",
+                "macList": {
+                  "macInfo": [
+                    {
+                      "mac": "TST8",
+                      "currentEffectiveDate": "2017-07-07-05:00",
+                      "eligibilityCode": "E",
+                      "macSeqNumber": "1138221",
+                      "maxLineLimit": "3",
+                      "amount": "4.00",
+                      "duration": "9999",
+                      "relatedSoc": "PDSL002",
+                      "appliedCount": "0"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "batchProcessInd": "false"
+        },
+        {
+          "transactionId": "1133",
+          "subscriberInfo": {
+            "ban": "ban1",
+            "subscriberId": "sub3",
+            "mdn": "mdn3"
+         },
+          "pricePlanMacList": {
+            "pricePlanMacInfo": [
+              {
+                "pricePlanSoc": "LSD134AS",
+                "effectiveDate": "2017-06-12-04:00",
+                "macList": {
+                  "macInfo": [
+                    {
+                      "mac": "PYAUTO",
+                      "eligibilityCode": "E",
+                      "amount": "5.00",
+                      "duration": "9999",
+                      "relatedSoc": "LSDPHN25D",
+                      "creditAmountOverrideInd": "false",
+                      "durationOverrideInd": "false"
+                    },
+                    {
+                      "mac": "TST8",
+                      "eligibilityCode": "P",
+                      "maxLineLimit": "3",
+                      "amount": "4.00",
+                      "duration": "9999",
+                      "relatedSoc": "LSD134AS",
+                      "creditAmountOverrideInd": "false",
+                      "durationOverrideInd": "false"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "batchProcessInd": "false"
+        },
+        {
+          "transactionId": "1144",
+          "subscriberInfo": {
+            "ban": "ban1",
+            "subscriberId": "sub4",
+            "mdn": "mdn4"
+          },
+          "pricePlanMacList": {
+            "pricePlanMacInfo": [
+              {
+                "pricePlanSoc": "LSD134AS",
+                "effectiveDate": "2017-06-12-04:00",
+                "macList": {
+                  "macInfo": [
+                    {
+                      "mac": "PYAUTO",
+                      "eligibilityCode": "E",
+                      "amount": "5.00",
+                      "duration": "9999",
+                      "relatedSoc": "LSDPHN25D",
+                      "creditAmountOverrideInd": "false",
+                      "durationOverrideInd": "false"
+                    },
+                    {
+                      "mac": "TST8",
+                      "eligibilityCode": "P",
+                      "maxLineLimit": "3",
+                      "amount": "4.00",
+                      "duration": "9999",
+                      "relatedSoc": "LSD134AS",
+                      "creditAmountOverrideInd": "false",
+                      "durationOverrideInd": "false"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "batchProcessInd": "false"
+        }
+      ]
+    }
+  }
+}

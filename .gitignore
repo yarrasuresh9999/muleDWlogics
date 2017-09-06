@@ -1,0 +1,11 @@
+.DS_Store
+/bin/
+target/
+build/
+.mule
+.project
+.settings/
+.classpath
+.catalog/
+/bin/
+catalog/
