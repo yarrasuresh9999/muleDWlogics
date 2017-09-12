@@ -42,10 +42,11 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 			mac: $.mac,
 			isExisting: true when $.macSeqNumber != null otherwise false,
 			eligibilityCode: $.eligibilityCode,
-			currentDiscount: $.amount when $.macSeqNumber != null otherwise 0,
-			availableDiscount: $.amount as :number when upper ($.eligibilityCode) != 'N' otherwise 0,
-			duration: $.duration,
-			(maxLineLimit: $.maxLineLimit as :number) when upper $.eligibilityCode == 'P',
+			amount: $.amount as :number,
+			currentDiscount: $.amount as :number when $.macSeqNumber != null otherwise 0,
+			availableDiscount: $.amount as :number when $.macSeqNumber == null and $.eligibilityCode != 'P' otherwise 0,
+			duration: $.duration as :number,
+			(limit: $.maxLineLimit as :number when $.maxLineLimit <= sizeOf eligibilityInfo otherwise sizeOf eligibilityInfo) when upper $.eligibilityCode == 'P',
 			subscriberId: eligibilityInfo.subscriberInfo.subscriberId
 		} when eligibilityInfo.pricePlanMacList.pricePlanMacInfo.macList != null otherwise []
 	}.macs
@@ -53,12 +54,14 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 ---
 subcriberMacs groupBy $.mac map {
 	mac: $.mac[0],
+	duration: $.duration[0],
 	isExisting: true when $.isExisting contains true otherwise false,
-	duration: $.duration[0] as :number,
 	currentDiscount: sum $.currentDiscount,
-	availableDiscount: sum $.availableDiscount when $.maxLineLimit == null otherwise (min $.maxLineLimit) * $.availableDiscount[0],
-	eligibleDiscount: (sum $.currentDiscount) + (sum $.availableDiscount when $.maxLineLimit == null otherwise (min $.maxLineLimit) * $.availableDiscount[0]),
-	subscriberId: $.subscriberId distinctBy $,
+	availableDiscount: sum $.availableDiscount when not ($.eligibilityCode contains 'P') 
+						otherwise (sum $.availableDiscount when ((sum $.availableDiscount + sum $.currentDiscount) >= $.limit[0]*$.amount[0]) 
+							otherwise sum $.availableDiscount + (($.limit[0]-((sum $.availableDiscount + sum $.currentDiscount)/$.amount[0]))*$.amount[0])
+						),
+	subscriberIds: $.subscriberId,
 	batchProcessInd: false
 } when batchProcessInd == false otherwise [{batchProcessInd: batchProcessInd as :boolean}]]]></dw:set-payload>
         </dw:transform-message>
