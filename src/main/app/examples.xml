@@ -31,39 +31,28 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
     </flow>
     
     <flow name="IterateOver3Loops">
-        <dw:transform-message doc:name="Transform Message">
+        <dw:transform-message doc:name="DW logic over multiple loops">
             <dw:input-payload doc:sample="sample_data/LoopsIterateInput.json"/>
+            <dw:set-payload resource="classpath:iterateOverLoopsDwFile.dwl"/>
+        </dw:transform-message>
+    </flow>
+    
+    <flow name="examplesFlow">
+        <dw:transform-message doc:name="Transform Message">
+        	<dw:input-payload doc:sample="sample_data/LoopsIterateInput.json"/>
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
-%var eligibilityInfo = payload.cmeResponse.eligibilityList.eligibilityInfo filter $.pricePlanMacList != null
-%var batchProcessInd = payload.cmeResponse.eligibilityList.eligibilityInfo[0].batchProcessInd as :boolean default false
-%var subcriberMacs = flatten (eligibilityInfo map ((eligibilityInfo, indexObject) ->{
-		macs: flatten eligibilityInfo.pricePlanMacList.pricePlanMacInfo.macList.macInfo map {
-			mac: $.mac,
-			isExisting: true when $.macSeqNumber != null otherwise false,
-			eligibilityCode: $.eligibilityCode,
-			amount: $.amount as :number,
-			currentDiscount: $.amount as :number when $.macSeqNumber != null otherwise 0,
-			availableDiscount: $.amount as :number when $.macSeqNumber == null and $.eligibilityCode != 'P' otherwise 0,
-			duration: $.duration as :number,
-			(limit: $.maxLineLimit as :number when $.maxLineLimit <= sizeOf eligibilityInfo otherwise sizeOf eligibilityInfo) when upper $.eligibilityCode == 'P',
-			subscriberId: eligibilityInfo.subscriberInfo.subscriberId
-		} when eligibilityInfo.pricePlanMacList.pricePlanMacInfo.macList != null otherwise []
-	}.macs
-))
+%var noOfEligibleSubscribers = (sizeOf payload.cmeResponse.eligibilityList.eligibilityInfo) -1 default 0
 ---
-subcriberMacs groupBy $.mac map {
+flatten payload.cmeResponse.eligibilityList.eligibilityInfo..macInfo groupBy $.mac map {
 	mac: $.mac[0],
+	isExisting: true when $.macSeqNumber != null otherwise false,
 	duration: $.duration[0],
-	isExisting: true when $.isExisting contains true otherwise false,
-	currentDiscount: sum $.currentDiscount,
-	availableDiscount: sum $.availableDiscount when not ($.eligibilityCode contains 'P') 
-						otherwise (sum $.availableDiscount when ((sum $.availableDiscount + sum $.currentDiscount) >= $.limit[0]*$.amount[0]) 
-							otherwise sum $.availableDiscount + (($.limit[0]-((sum $.availableDiscount + sum $.currentDiscount)/$.amount[0]))*$.amount[0])
-						),
-	subscriberIds: $.subscriberId,
+	currentDiscount: ((sizeOf $.macSeqNumber default 0) * $.amount[0]),
+	availableDiscount: ((sizeOf $.mac) - (sizeOf $.macSeqNumber default 0)) * $.amount[0] when (sizeOf ($.eligibilityCode filter $ != 'P')) > (min [noOfEligibleSubscribers, ($.maxLineLimit[0] default 0)])
+						otherwise ((sizeOf ($.eligibilityCode filter $ != 'P')) - (sizeOf $.macSeqNumber default 0)) * $.amount[0] + ((min [noOfEligibleSubscribers, ($.maxLineLimit[0] default 0)]) - (sizeOf ($.eligibilityCode filter $ != 'P'))) * $.amount[0],
 	batchProcessInd: false
-} when batchProcessInd == false otherwise [{batchProcessInd: batchProcessInd as :boolean}]]]></dw:set-payload>
+} default [({batchProcessInd: true}) when payload.cmeResponse.eligibilityList.eligibilityInfo[0].batchProcessInd != null and payload.cmeResponse.eligibilityList.eligibilityInfo[0].batchProcessInd as :boolean]]]></dw:set-payload>
         </dw:transform-message>
     </flow>
     
